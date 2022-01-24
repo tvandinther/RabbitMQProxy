@@ -14,8 +14,14 @@ services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwagger(options =>
+{
+    options.RouteTemplate = "{documentName}/swagger.json";
+});
+app.UseSwaggerUI(options =>
+{
+    options.RoutePrefix = "";
+});
 
 app.UseHttpsRedirection();
 
