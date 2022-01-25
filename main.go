@@ -20,9 +20,11 @@ func main() {
 		msg, err := sendMessageToQueue(c, &config)
 
 		if err != nil {
+			log.Println(msg)
 			c.String(http.StatusBadGateway, msg)
+		} else {
+			c.Status(http.StatusOK)
 		}
-		c.Status(http.StatusOK)
 	})
 
 	err := router.Run(":" + config.ProxyPort)
@@ -73,17 +75,10 @@ func initialiseEnv() {
 			handleFatalError("Error setting RABBITMQ_PASSWORD", err)
 		}
 	}
-
-	if os.Getenv("PROXY_PORT") == "" {
-		err := os.Setenv("PROXY_PORT", "5555")
-		if err != nil {
-			handleFatalError("Error setting PROXY_PORT", err)
-		}
-	}
 }
 
 func populateConfig(config *Config) {
-	config.ProxyPort = os.Getenv("PROXY_PORT")
+	config.ProxyPort = "80"
 	config.RabbitMQHost = os.Getenv("RABBITMQ_HOST")
 	config.RabbitMQPort = os.Getenv("RABBITMQ_PORT")
 	config.RabbitMQUsername = os.Getenv("RABBITMQ_USERNAME")
